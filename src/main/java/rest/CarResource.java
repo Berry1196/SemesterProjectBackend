@@ -30,6 +30,7 @@ public class CarResource {
     public String getAllCars() {
         return GSON.toJson(FACADE.getAllCars());
     }
+
     @GET
     @Path("{id}")
     @Produces("application/json")
@@ -37,6 +38,7 @@ public class CarResource {
         Long idLong = Long.valueOf(id);
         return GSON.toJson(FACADE.getCarById(idLong));
     }
+
     @POST
     @Consumes("application/json")
     @Produces("application/json")
@@ -45,13 +47,13 @@ public class CarResource {
         CarDTO carDTO = GSON.fromJson(car, CarDTO.class);
         return GSON.toJson(FACADE.create(carDTO));
     }
+
     @DELETE
     @Path("{id}")
     public void deleteCar(@PathParam("id") int id) {
         Long idLong = Long.valueOf(id);
         FACADE.deleteCar(idLong);
     }
-
 
     @GET
     @Path("jokes")

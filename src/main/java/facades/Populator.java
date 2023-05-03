@@ -7,8 +7,15 @@ package facades;
 
 import dtos.CarDTO;
 import dtos.RenameMeDTO;
+import entities.Exercise;
+
 import entities.RenameMe;
+
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+
+import entities.User;
+import entities.Workout;
 import utils.EMF_Creator;
 
 /**
@@ -18,11 +25,15 @@ import utils.EMF_Creator;
 public class Populator {
     public static void populate(){
         EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
-        CarFacade facade = CarFacade.getCarFacade(emf);
-        facade.create(new CarDTO("Volvo", "V70", "ABC123"));
-        facade.create(new CarDTO("BMW", "X5", "ABC123"));
-        facade.create(new CarDTO("Audi", "R8", "ABC123"));
+        EntityManager em = emf.createEntityManager();
 
+        em.getTransaction().begin();
+
+        Exercise exercise = new Exercise();
+
+        em.persist(exercise);
+
+        em.getTransaction().commit();
     }
     
     public static void main(String[] args) {
