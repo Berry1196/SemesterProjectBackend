@@ -17,6 +17,7 @@ import utils.EMF_Creator;
  */
 public class Populator {
     public static void populate(){
+        // GitHub push comment test
         EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
         CarFacade facade = CarFacade.getCarFacade(emf);
         facade.create(new CarDTO("Volvo", "V70", "ABC123"));
