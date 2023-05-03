@@ -22,12 +22,7 @@ public class CarFacade {
     //Private Constructor to ensure Singleton
     private CarFacade() {
     }
-
-
-    /**
-     * @param _emf
-     * @return an instance of this facade class.
-     */
+    
     public static CarFacade getCarFacade(EntityManagerFactory _emf) {
         if (instance == null) {
             emf = _emf;
