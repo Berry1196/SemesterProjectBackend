@@ -26,4 +26,7 @@ public class Workout {
             @JoinColumn(name = "user_name", referencedColumnName = "user_name")})
     @ManyToMany
     private List<User> userList = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "workoutList")
+    private List<Exercise> exercisesList = new ArrayList<>();
 }

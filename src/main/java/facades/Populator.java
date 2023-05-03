@@ -7,6 +7,8 @@ package facades;
 
 import dtos.CarDTO;
 import dtos.RenameMeDTO;
+import entities.Exercise;
+
 import entities.RenameMe;
 
 import javax.persistence.EntityManager;
@@ -27,15 +29,9 @@ public class Populator {
 
         em.getTransaction().begin();
 
-        User user = new User("user", "test");
-        Workout workout = new Workout();
-        workout.setName("Test");
+        Exercise exercise = new Exercise();
 
-        user.getWorkoutList().add(workout);
-        workout.getUserList().add(user);
-
-        em.persist(user);
-        em.persist(workout);
+        em.persist(exercise);
 
         em.getTransaction().commit();
     }

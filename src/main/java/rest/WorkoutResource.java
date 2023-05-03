@@ -2,7 +2,9 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import entities.Workout;
 import facades.CarFacade;
+import facades.WorkoutFacade;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManagerFactory;
@@ -12,12 +14,13 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 
 @Path("workouts")
 public class WorkoutResource {
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
 
-    private static final CarFacade FACADE =  CarFacade.getCarFacade(EMF);
+    private static final WorkoutFacade FACADE =  WorkoutFacade.getWorkoutFacade(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     @GET
@@ -41,5 +44,11 @@ public class WorkoutResource {
 
         assert response != null;
         return response.body();
+    }
+
+    @GET
+    @Produces("application/json")
+    public String getPredefinedWorkouts() {
+        return GSON.toJson(FACADE.getPredefinedWorkouts());
     }
 }
