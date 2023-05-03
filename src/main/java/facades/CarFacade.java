@@ -22,7 +22,7 @@ public class CarFacade {
     //Private Constructor to ensure Singleton
     private CarFacade() {
     }
-    
+
     public static CarFacade getCarFacade(EntityManagerFactory _emf) {
         if (instance == null) {
             emf = _emf;
