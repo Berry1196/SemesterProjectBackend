@@ -8,7 +8,12 @@ package facades;
 import dtos.CarDTO;
 import dtos.RenameMeDTO;
 import entities.RenameMe;
+
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+
+import entities.User;
+import entities.Workout;
 import utils.EMF_Creator;
 
 /**
@@ -18,11 +23,21 @@ import utils.EMF_Creator;
 public class Populator {
     public static void populate(){
         EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
-        CarFacade facade = CarFacade.getCarFacade(emf);
-        facade.create(new CarDTO("Volvo", "V70", "ABC123"));
-        facade.create(new CarDTO("BMW", "X5", "ABC123"));
-        facade.create(new CarDTO("Audi", "R8", "ABC123"));
+        EntityManager em = emf.createEntityManager();
 
+        em.getTransaction().begin();
+
+        User user = new User("user", "test");
+        Workout workout = new Workout();
+        workout.setName("Test");
+
+        user.getWorkoutList().add(workout);
+        workout.getUserList().add(user);
+
+        em.persist(user);
+        em.persist(workout);
+
+        em.getTransaction().commit();
     }
     
     public static void main(String[] args) {

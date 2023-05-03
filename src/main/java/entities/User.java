@@ -44,6 +44,9 @@ public class User implements Serializable {
     @ManyToMany
     private List<Role> roleList = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "userList")
+    private List<Workout> workoutList = new ArrayList<>();
+
     public List<String> getRolesAsStrings() {
         if (roleList.isEmpty()) {
             return null;
@@ -54,7 +57,6 @@ public class User implements Serializable {
         });
         return rolesAsStrings;
     }
-
 
     //TODO Change when password is hashed
     public boolean verifyPassword(String pw) {
