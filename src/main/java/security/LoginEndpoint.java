@@ -41,10 +41,11 @@ public class LoginEndpoint {
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     public static final UserFacade USER_FACADE = UserFacade.getUserFacade(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    @Path("login")
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("login")
     public Response login(String jsonString) throws AuthenticationException, API_Exception {
         String username;
         String password;
@@ -53,7 +54,7 @@ public class LoginEndpoint {
             username = json.get("username").getAsString();
             password = json.get("password").getAsString();
         } catch (Exception e) {
-           throw new API_Exception("Malformed JSON Suplied",400,e);
+            throw new API_Exception("Malformed JSON Supplied", 400, e);
         }
 
         try {
@@ -72,38 +73,49 @@ public class LoginEndpoint {
         }
         throw new AuthenticationException("Invalid username or password! Please try again");
     }
-    @Path("signup")
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response signup(String jsonUser) throws AuthenticationException, JOSEException {
+    @Path("signup")
+    public Response signup(String jsonUser) throws API_Exception {
+
+        // loads the json into a UserDTO object
         UserDTO userDTO = GSON.fromJson(jsonUser, UserDTO.class);
+
         try {
-           UserDTO returnedUserDTO = USER_FACADE.createUser(userDTO);
+            // persists the user in the database and returns the persisted user
+            UserDTO returnedUserDTO = USER_FACADE.createUser(userDTO);
+
+            // creates a token for the user
             String token = createToken(returnedUserDTO.getUser_name(), returnedUserDTO.getRoles());
             JsonObject responseJson = new JsonObject();
             responseJson.addProperty("username", returnedUserDTO.getUser_name());
             responseJson.addProperty("token", token);
-            return Response.ok(new Gson().toJson(responseJson)).build();
-        } catch (DatabaseException ex) {
-                throw new AuthenticationException("Invalid username or password! Please try again");
+
+            // returns the username and token
+            return Response.status(201).entity(new Gson().toJson(responseJson)).build();
+        } catch (Exception ex) {
+            // throws an exception if the user already exists
+            throw new API_Exception("User already exists. Try another username.", 400);
         }
-
     }
-
 
     private String createToken(String userName, List<String> roles) throws JOSEException {
 
         StringBuilder res = new StringBuilder();
+
         for (String string : roles) {
             res.append(string);
             res.append(",");
         }
+
         String rolesAsString = res.length() > 0 ? res.substring(0, res.length() - 1) : "";
         String issuer = "semesterstartcode-dat3";
 
         JWSSigner signer = new MACSigner(SharedSecret.getSharedKey());
         Date date = new Date();
+
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
                 .subject(userName)
                 .claim("username", userName)
@@ -112,9 +124,10 @@ public class LoginEndpoint {
                 .issueTime(date)
                 .expirationTime(new Date(date.getTime() + TOKEN_EXPIRE_TIME))
                 .build();
+
         SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claimsSet);
         signedJWT.sign(signer);
-        return signedJWT.serialize();
 
+        return signedJWT.serialize();
     }
 }
