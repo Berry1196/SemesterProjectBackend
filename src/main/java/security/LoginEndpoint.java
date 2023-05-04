@@ -1,6 +1,7 @@
 package security;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nimbusds.jose.JOSEException;
@@ -10,7 +11,10 @@ import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import dtos.UserDTO;
 import facades.UserFacade;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -23,18 +27,21 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.eclipse.persistence.exceptions.DatabaseException;
 import security.errorhandling.AuthenticationException;
 import errorhandling.GenericExceptionMapper;
 import javax.persistence.EntityManagerFactory;
 import utils.EMF_Creator;
 
-@Path("login")
+@Path("")
 public class LoginEndpoint {
 
     public static final int TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //30 min
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     public static final UserFacade USER_FACADE = UserFacade.getUserFacade(EMF);
-
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    @Path("login")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -65,6 +72,25 @@ public class LoginEndpoint {
         }
         throw new AuthenticationException("Invalid username or password! Please try again");
     }
+    @Path("signup")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response signup(String jsonUser) throws AuthenticationException, JOSEException {
+        UserDTO userDTO = GSON.fromJson(jsonUser, UserDTO.class);
+        try {
+           UserDTO returnedUserDTO = USER_FACADE.createUser(userDTO);
+            String token = createToken(returnedUserDTO.getUser_name(), returnedUserDTO.getRoles());
+            JsonObject responseJson = new JsonObject();
+            responseJson.addProperty("username", returnedUserDTO.getUser_name());
+            responseJson.addProperty("token", token);
+            return Response.ok(new Gson().toJson(responseJson)).build();
+        } catch (DatabaseException ex) {
+                throw new AuthenticationException("Invalid username or password! Please try again");
+        }
+
+    }
+
 
     private String createToken(String userName, List<String> roles) throws JOSEException {
 

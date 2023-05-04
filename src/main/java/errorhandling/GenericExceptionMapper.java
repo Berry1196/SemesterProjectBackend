@@ -2,6 +2,7 @@ package errorhandling;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.eclipse.persistence.exceptions.DatabaseException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,9 +32,9 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable>
         if (ex instanceof WebApplicationException)
         {
             err = new ExceptionDTO(type.getStatusCode(), ((WebApplicationException) ex).getMessage());
-        } else
-        {
-
+        } else if (ex instanceof DatabaseException) {
+        err = new ExceptionDTO(500, "Internal Server Problem. We are sorry for the inconvenience");
+        } else {
             err = new ExceptionDTO(type.getStatusCode(), type.getReasonPhrase());
         }
         return Response.status(type.getStatusCode())
