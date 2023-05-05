@@ -5,16 +5,17 @@ import com.google.gson.GsonBuilder;
 import entities.Workout;
 import facades.CarFacade;
 import facades.WorkoutFacade;
+import kong.unirest.Unirest;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.*;
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.List;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import kong.unirest.HttpResponse;
+
+import java.io.File;
+import java.util.Random;
 
 @Path("workouts")
 public class WorkoutResource {
@@ -27,7 +28,6 @@ public class WorkoutResource {
     @Produces("application/json")
     @Consumes("application/json")
     @Path("{muscle}")
-    // Gets all workouts by muscle through the external API
     public String getAllWorkouts(@PathParam("muscle") String muscle) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.api-ninjas.com/v1/exercises?muscle="+muscle))
@@ -44,7 +44,6 @@ public class WorkoutResource {
         }
 
         assert response != null;
-        // Returns the body of the response
         return response.body();
     }
 
@@ -52,5 +51,18 @@ public class WorkoutResource {
     @Produces("application/json")
     public String getPredefinedWorkouts() {
         return GSON.toJson(FACADE.getPredefinedWorkouts());
+    }
+
+    @POST
+    @Path("/photo")
+    @Produces("image/jpeg")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response generateWorkoutPhoto(String muscles) {
+        HttpResponse<File> response = Unirest.get("https://muscle-group-image-generator.p.rapidapi.com/getImage?muscleGroups=" + muscles)
+                .header("X-RapidAPI-Key", "04cb178b04msh880aff6d34465f7p118339jsn457ca14b4907")
+                .header("X-RapidAPI-Host", "muscle-group-image-generator.p.rapidapi.com")
+                .asFile(new Random().nextDouble() + ".jpg");
+
+        return Response.ok(response.getBody()).build();
     }
 }
