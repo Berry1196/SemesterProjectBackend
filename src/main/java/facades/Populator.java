@@ -5,17 +5,11 @@
  */
 package facades;
 
-import dtos.CarDTO;
-import dtos.RenameMeDTO;
 import entities.Exercise;
-
-import entities.RenameMe;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import entities.User;
-import entities.Workout;
 import utils.EMF_Creator;
 
 /**
