@@ -27,6 +27,7 @@ public class WorkoutResource {
     @Produces("application/json")
     @Consumes("application/json")
     @Path("{muscle}")
+    // Gets all workouts by muscle through the external API
     public String getAllWorkouts(@PathParam("muscle") String muscle) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.api-ninjas.com/v1/exercises?muscle="+muscle))
@@ -43,6 +44,7 @@ public class WorkoutResource {
         }
 
         assert response != null;
+        // Returns the body of the response
         return response.body();
     }
 

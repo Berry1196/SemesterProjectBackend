@@ -21,11 +21,12 @@ public class ExerciseFacade {
         }
         return instance;
     }
-
+    // Gets exercises by workout
     public List<Exercise> getExercisesByWorkout(Workout workout) {
         EntityManager em = emf.createEntityManager();
         List<Exercise> exercises;
         try {
+            // creates a query that gets all exercises by workout
             exercises = em.createQuery("SELECT e FROM Exercise e WHERE e.workoutList = :workout", Exercise.class)
                     .setParameter("workout", workout)
                     .getResultList();
