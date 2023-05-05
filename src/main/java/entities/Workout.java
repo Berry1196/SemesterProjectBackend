@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "workouts")
+@NamedQuery(name = "Workout.deleteAllRows", query = "DELETE from Workout")
 public class Workout {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +30,8 @@ public class Workout {
 
     @ManyToMany(mappedBy = "workoutList")
     private List<Exercise> exercisesList = new ArrayList<>();
+
+    public Workout(String name) {
+        this.name = name;
+    }
 }

@@ -2,8 +2,6 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import entities.Workout;
-import facades.CarFacade;
 import facades.WorkoutFacade;
 import kong.unirest.Unirest;
 import utils.EMF_Creator;

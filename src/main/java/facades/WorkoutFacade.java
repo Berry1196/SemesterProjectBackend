@@ -6,6 +6,7 @@ import entities.Workout;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.util.ArrayList;
 import java.util.List;
 
 public class WorkoutFacade {
@@ -21,6 +22,16 @@ public class WorkoutFacade {
             instance = new WorkoutFacade();
         }
         return instance;
+    }
+
+    public int workoutCount() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            ArrayList<Workout> workouts = new ArrayList<>(em.createQuery("SELECT w FROM Workout w", Workout.class).getResultList());
+            return workouts.size();
+        } finally {
+            em.close();
+        }
     }
 
     public List<WorkoutDTO> getPredefinedWorkouts() {

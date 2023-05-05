@@ -1,7 +1,6 @@
 package rest;
 
-import entities.Car;
-
+import entities.Workout;
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
 
@@ -23,7 +22,7 @@ import java.net.URI;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
-public class CarEndpointTest {
+public class WorkoutEndpointTest {
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
 
@@ -31,7 +30,7 @@ public class CarEndpointTest {
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
 
-    Car c1, c2, c3, c4;
+    Workout workout1, workout2, workout3, workout4;
 
     static HttpServer startServer() {
         ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
@@ -64,18 +63,19 @@ public class CarEndpointTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-         c1 = new Car("Volvo", "V70", "ABC1234");
-         c2 = new Car("BMW", "M3", "DEF5678");
-         c3 = new Car("Audi", "A4", "GHI9101");
-         c4 = new Car("Ford", "Mustang", "JKL1112");
+        workout1 = new Workout("Upper body workout");
+        workout2 = new Workout("Lower body workout");
+        workout3 = new Workout("Full body workout");
+        workout4 = new Workout("Core workout");
+
         try {
             em.getTransaction().begin();
             //Delete existing users and roles to get a "fresh" database
-            em.createNamedQuery("Car.deleteAllRows").executeUpdate();
-            em.persist(c1);
-            em.persist(c2);
-            em.persist(c3);
-            em.persist(c4);
+            em.createNamedQuery("Workout.deleteAllRows").executeUpdate();
+            em.persist(workout1);
+            em.persist(workout2);
+            em.persist(workout3);
+            em.persist(workout4);
 
             //System.out.println("Saved test data to database");
             em.getTransaction().commit();
@@ -89,7 +89,7 @@ public class CarEndpointTest {
         System.out.println("Testing is server UP");
         given()
                 .when()
-                .get("/cars")
+                .get("/workouts")
                 .then()
                 .statusCode(200);
     }
@@ -99,21 +99,8 @@ public class CarEndpointTest {
     public void testCount() throws Exception {
         given()
                 .contentType("application/json")
-                .get("/cars").then()
+                .get("/workouts").then()
                 .assertThat()
                 .statusCode(200).body("size()", org.hamcrest.Matchers.is(4));
-    }
-
-    // Rest assured test that verifies that the endpoint returns the correct car.
-    @Test
-    public void testGetCarById() throws Exception {
-        given()
-                .contentType("application/json")
-                .get("/cars/{id}", c1.getId()).then()
-                .assertThat()
-                .body("brand", equalTo("Volvo"))
-                .body("model", equalTo("V70"))
-                .body("numberPlate", equalTo("ABC1234"));
-
     }
 }
