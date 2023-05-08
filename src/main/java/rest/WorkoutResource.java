@@ -2,6 +2,7 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dtos.WorkoutDTO;
 import facades.WorkoutFacade;
 import kong.unirest.Unirest;
 import utils.EMF_Creator;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.Response;
 import kong.unirest.HttpResponse;
 
 import java.io.File;
+import java.util.List;
 import java.util.Random;
 
 @Path("workouts")
@@ -26,6 +28,23 @@ public class WorkoutResource {
     @Produces("application/json")
     public String getPredefinedWorkouts() {
         return GSON.toJson(FACADE.getPredefinedWorkouts());
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/{muscle}")
+    public String getWorkoutsByMuscle(@PathParam("muscle") String muscle) {
+        return GSON.toJson(FACADE.getWorkoutsByMuscleGroup(muscle));
+    }
+
+    @POST
+    @Produces("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{username}")
+    public Response linkWorkoutToUser(@PathParam("username") String username, String workout) {
+        WorkoutDTO workoutDTO = GSON.fromJson(workout, WorkoutDTO.class);
+        List<WorkoutDTO> workouts = FACADE.linkWorkoutToUser(username, workoutDTO);
+        return Response.ok(GSON.toJson(workouts)).build();
     }
 
     @POST
