@@ -51,6 +51,19 @@ public class WorkoutFacade {
         // Converting to DTOs and returning WorkoutDTOs
         return WorkoutDTO.getDTOs(workouts);
     }
+    //Create a workout
+    public WorkoutDTO createWorkout(WorkoutDTO workoutDTO) {
+        EntityManager em = emf.createEntityManager();
+        Workout workout = new Workout(workoutDTO.getName());
+        try {
+            em.getTransaction().begin();
+            em.persist(workout);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new WorkoutDTO(workout);
+    }
 
     public static void main(String[] args) {
         EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();

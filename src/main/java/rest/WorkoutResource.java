@@ -2,6 +2,7 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dtos.WorkoutDTO;
 import facades.WorkoutFacade;
 import kong.unirest.Unirest;
 import utils.EMF_Creator;
@@ -39,5 +40,12 @@ public class WorkoutResource {
                 .asFile(new Random().nextDouble() + ".jpg");
 
         return Response.ok(response.getBody()).build();
+    }
+    @POST
+    @Produces("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String createWorkout(String workout) {
+        WorkoutDTO workoutDTO = GSON.fromJson(workout, WorkoutDTO.class);
+        return GSON.toJson(FACADE.createWorkout(workoutDTO));
     }
 }
