@@ -3,6 +3,7 @@ package facades;
 import dtos.WorkoutDTO;
 import entities.Exercise;
 import entities.Workout;
+import utils.EMF_Creator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -50,4 +51,11 @@ public class WorkoutFacade {
         // Converting to DTOs and returning WorkoutDTOs
         return WorkoutDTO.getDTOs(workouts);
     }
+
+    public static void main(String[] args) {
+        EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
+        WorkoutFacade facade = getWorkoutFacade(emf);
+        System.out.println(facade.getPredefinedWorkouts());
+    }
 }
+
