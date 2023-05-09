@@ -59,6 +59,14 @@ public class WorkoutResource {
 
         return Response.ok(response.getBody()).build();
     }
+
+    @GET
+    @Produces("application/json")
+    @Path("/user/{username}")
+    public String getWorkoutsByUser(@PathParam("username") String username) {
+        return GSON.toJson(FACADE.getWorkoutsByUser(username));
+    }
+
     @POST
     @Produces("application/json")
     @Consumes(MediaType.APPLICATION_JSON)
