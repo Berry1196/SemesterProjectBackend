@@ -1,10 +1,13 @@
 package facades;
 
+import dtos.ExerciseDTO;
+import dtos.WorkoutDTO;
 import entities.Exercise;
 import entities.Workout;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.util.HashSet;
 import java.util.List;
 
 public class ExerciseFacade {
@@ -36,4 +39,40 @@ public class ExerciseFacade {
         return exercises;
     }
 
+    public List<ExerciseDTO> getExercises() {
+        EntityManager em = emf.createEntityManager();
+        List<Exercise> exercises;
+        try {
+            exercises = em.createQuery("SELECT e FROM Exercise e", Exercise.class).getResultList();
+        } finally {
+            em.close();
+        }
+        return ExerciseDTO.getDTOs(exercises);
+    }
+
+    public ExerciseDTO addExercise(ExerciseDTO exerciseDTO) {
+        EntityManager em = emf.createEntityManager();
+        Exercise exercise = new Exercise(exerciseDTO);
+        try {
+            em.getTransaction().begin();
+            em.persist(exercise);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new ExerciseDTO(exercise);
+    }
+
+    public ExerciseDTO deleteExercise(Long id) {
+        EntityManager em = emf.createEntityManager();
+        Exercise exercise = em.find(Exercise.class, id);
+        try {
+            em.getTransaction().begin();
+            em.remove(exercise);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new ExerciseDTO(exercise);
+    }
 }

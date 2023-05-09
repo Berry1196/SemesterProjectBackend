@@ -1,5 +1,6 @@
 package entities;
 
+import dtos.ExerciseDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,4 +37,13 @@ public class Exercise {
             @JoinColumn(name = "workout_id", referencedColumnName = "id")})
     @ManyToMany
     private List<Workout> workoutList = new ArrayList<>();
+
+    public Exercise(ExerciseDTO exerciseDTO) {
+        this.name = exerciseDTO.getName();
+        this.type = exerciseDTO.getType();
+        this.muscle = exerciseDTO.getMuscle();
+        this.equipment = exerciseDTO.getEquipment();
+        this.difficulty = exerciseDTO.getDifficulty();
+        this.instructions = exerciseDTO.getInstructions();
+    }
 }
