@@ -114,20 +114,22 @@ public class WorkoutFacade {
     
     public WorkoutDTO addExercisesToWorkout(Long workoutId, Long[] ids) {
         EntityManager em = emf.createEntityManager();
+        ExerciseFacade exerciseFacade = ExerciseFacade.getExerciseFacade(emf);
         Workout workout = em.find(Workout.class, workoutId);
         try {
             em.getTransaction().begin();
             for (Long id : ids) {
+                Exercise exercise = exerciseFacade.getExerciseById(id);
                 workout.getExercisesList().add(exercise);
                 exercise.getWorkoutList().add(workout);
-    }
-        return new WorkoutDTO(workout);
-        }
-            em.close();
-        } finally {
-            em.getTransaction().commit();
-            em.merge(workout);
             }
+            em.merge(workout);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new WorkoutDTO(workout);
+    }
 
     public List<WorkoutDTO> getWorkoutsByUser(String username) {
         EntityManager em = emf.createEntityManager();
