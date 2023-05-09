@@ -43,15 +43,4 @@ public class ExerciseResource {
         ExerciseDTO exerciseDTO = FACADE.deleteExercise(id);
         return Response.ok(GSON.toJson(exerciseDTO)).build();
     }
-
-    //Endpoint that adds an exercise to a workout
-    @POST
-    @Produces("application/json")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/add/{workoutId}")
-    public Response addExerciseToWorkout(@PathParam("workoutId") Long workoutId, String exercise) {
-        ExerciseDTO exerciseDTO = GSON.fromJson(exercise, ExerciseDTO.class);
-        ExerciseDTO returnedDTO = FACADE.addExerciseToWorkout(workoutId, exerciseDTO);
-        return Response.ok(GSON.toJson(returnedDTO)).build();
-    }
 }

@@ -2,6 +2,7 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dtos.ExerciseDTO;
 import dtos.WorkoutDTO;
 import facades.WorkoutFacade;
 import kong.unirest.Unirest;
@@ -59,11 +60,21 @@ public class WorkoutResource {
 
         return Response.ok(response.getBody()).build();
     }
+
     @POST
     @Produces("application/json")
     @Consumes(MediaType.APPLICATION_JSON)
     public String createWorkout(String workout) {
         WorkoutDTO workoutDTO = GSON.fromJson(workout, WorkoutDTO.class);
         return GSON.toJson(FACADE.createWorkout(workoutDTO));
+    }
+
+    @POST
+    @Produces("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/exercises/{workoutId}")
+    public WorkoutDTO addExerciseToWorkout(@PathParam("workoutId") Long workoutId, String exerciseIDs) {
+        Long[] ids = GSON.fromJson(exerciseIDs, Long[].class);
+        return FACADE.addExercisesToWorkout(workoutId, ids);
     }
 }

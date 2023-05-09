@@ -124,5 +124,22 @@ public class WorkoutFacade {
 
     }
 
+    public WorkoutDTO addExercisesToWorkout(Long workoutId, Long[] ids) {
+        EntityManager em = emf.createEntityManager();
+        Workout workout = em.find(Workout.class, workoutId);
+        try {
+            em.getTransaction().begin();
+            for (Long id : ids) {
+                Exercise exercise = em.find(Exercise.class, id);
+                workout.getExercisesList().add(exercise);
+                exercise.getWorkoutList().add(workout);
+            }
+            em.merge(workout);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new WorkoutDTO(workout);
+    }
 }
 
