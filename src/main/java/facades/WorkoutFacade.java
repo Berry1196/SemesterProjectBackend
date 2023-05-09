@@ -1,5 +1,6 @@
 package facades;
 
+import dtos.ExerciseDTO;
 import dtos.WorkoutDTO;
 import entities.Exercise;
 import entities.User;
@@ -110,5 +111,18 @@ public class WorkoutFacade {
         }
         return new WorkoutDTO(workout);
     }
+
+
+
+    public static void main(String[] args) {
+
+        emf = EMF_Creator.createEntityManagerFactory();
+        WorkoutFacade workoutFacade = getWorkoutFacade(emf);
+        ExerciseFacade exerciseFacade = ExerciseFacade.getExerciseFacade(emf);
+        UserFacade userFacade = UserFacade.getUserFacade(emf);
+        //workoutFacade.addExerciseToWorkout(1L, 1L );
+
+    }
+
 }
 

@@ -1,13 +1,12 @@
 package facades;
 
 import dtos.ExerciseDTO;
-import dtos.WorkoutDTO;
 import entities.Exercise;
 import entities.Workout;
+import utils.EMF_Creator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import java.util.HashSet;
 import java.util.List;
 
 public class ExerciseFacade {
@@ -75,4 +74,55 @@ public class ExerciseFacade {
         }
         return new ExerciseDTO(exercise);
     }
+
+    public ExerciseDTO getExerciseByName(String exerciseName) {
+        EntityManager em = emf.createEntityManager();
+        Exercise exercise;
+        try {
+            exercise = em.createQuery("SELECT e FROM Exercise e WHERE e.name = :exerciseName", Exercise.class)
+                    .setParameter("exerciseName", exerciseName)
+                    .getSingleResult();
+        } finally {
+            em.close();
+        }
+        return new ExerciseDTO(exercise);
+    }
+
+    //Get exercise by id
+    public Exercise getExerciseById(Long id) {
+        EntityManager em = emf.createEntityManager();
+        Exercise exercise;
+        try {
+            exercise = em.createQuery("SELECT e FROM Exercise e WHERE e.id = :id", Exercise.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } finally {
+            em.close();
+        }
+        return exercise;
+    }
+
+    //Add exercise to workout
+    public void addExerciseToWorkout(Long exerID, Long workoutID) {
+        EntityManager em = emf.createEntityManager();
+        Exercise exercise = em.find(Exercise.class, exerID);
+        Workout workout = em.find(Workout.class, workoutID);
+        try {
+            em.getTransaction().begin();
+            workout.addExercise(exercise);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+
+
+    }
+
+    public static void main(String[] args) {
+        EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
+        ExerciseFacade exerciseFacade = ExerciseFacade.getExerciseFacade(emf);
+        exerciseFacade.addExerciseToWorkout(1L, 1L);
+    }
+
+
 }
