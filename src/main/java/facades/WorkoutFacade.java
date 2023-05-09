@@ -1,5 +1,6 @@
 package facades;
 
+import dtos.ExerciseDTO;
 import dtos.WorkoutDTO;
 import entities.Exercise;
 import entities.User;
@@ -110,6 +111,23 @@ public class WorkoutFacade {
         }
         return new WorkoutDTO(workout);
     }
+    
+    public WorkoutDTO addExercisesToWorkout(Long workoutId, Long[] ids) {
+        EntityManager em = emf.createEntityManager();
+        Workout workout = em.find(Workout.class, workoutId);
+        try {
+            em.getTransaction().begin();
+            for (Long id : ids) {
+                workout.getExercisesList().add(exercise);
+                exercise.getWorkoutList().add(workout);
+    }
+        return new WorkoutDTO(workout);
+        }
+            em.close();
+        } finally {
+            em.getTransaction().commit();
+            em.merge(workout);
+            }
 
     public List<WorkoutDTO> getWorkoutsByUser(String username) {
         EntityManager em = emf.createEntityManager();

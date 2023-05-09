@@ -34,4 +34,9 @@ public class Workout {
     public Workout(String name) {
         this.name = name;
     }
+
+    public void addExercise(Exercise exercise) {
+        this.exercisesList.add(exercise);
+        exercise.getWorkoutList().add(this);
+    }
 }
