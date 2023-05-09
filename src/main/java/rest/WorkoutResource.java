@@ -59,4 +59,11 @@ public class WorkoutResource {
 
         return Response.ok(response.getBody()).build();
     }
+    @POST
+    @Produces("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String createWorkout(String workout) {
+        WorkoutDTO workoutDTO = GSON.fromJson(workout, WorkoutDTO.class);
+        return GSON.toJson(FACADE.createWorkout(workoutDTO));
+    }
 }

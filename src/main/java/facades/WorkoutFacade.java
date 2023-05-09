@@ -4,6 +4,7 @@ import dtos.WorkoutDTO;
 import entities.Exercise;
 import entities.User;
 import entities.Workout;
+import utils.EMF_Creator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -52,6 +53,7 @@ public class WorkoutFacade {
         return WorkoutDTO.getDTOs(workouts);
     }
 
+
     public List<WorkoutDTO> getWorkoutsByMuscleGroup(String muscleGroup) {
         EntityManager em = emf.createEntityManager();
         ExerciseFacade exerciseFacade = ExerciseFacade.getExerciseFacade(emf);
@@ -94,4 +96,19 @@ public class WorkoutFacade {
             em.close();
         }
     }
+
+    //Create a workout
+    public WorkoutDTO createWorkout(WorkoutDTO workoutDTO) {
+        EntityManager em = emf.createEntityManager();
+        Workout workout = new Workout(workoutDTO.getName());
+        try {
+            em.getTransaction().begin();
+            em.persist(workout);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new WorkoutDTO(workout);
+    }
 }
+
