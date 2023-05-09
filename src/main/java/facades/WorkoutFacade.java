@@ -110,5 +110,17 @@ public class WorkoutFacade {
         }
         return new WorkoutDTO(workout);
     }
+
+    public List<WorkoutDTO> getWorkoutsByUser(String username) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            List<Workout> workouts = em.createQuery("SELECT w FROM Workout w JOIN w.userList u WHERE u.userName = :username", Workout.class)
+                    .setParameter("username", username)
+                    .getResultList();
+            return WorkoutDTO.getDTOs(workouts);
+        } finally {
+            em.close();
+        }
+    }
 }
 
