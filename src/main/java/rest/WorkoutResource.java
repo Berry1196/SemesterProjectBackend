@@ -73,13 +73,14 @@ public class WorkoutResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public String createWorkout(String workout) {
         WorkoutDTO workoutDTO = GSON.fromJson(workout, WorkoutDTO.class);
+        System.out.println(workoutDTO.getExercisesList().size());
         return GSON.toJson(FACADE.createWorkout(workoutDTO));
     }
 
     @POST
     @Produces("application/json")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/exercises/{workoutId}")
+    @Path("/new")
     public WorkoutDTO addExerciseToWorkout(@PathParam("workoutId") Long workoutId, String exerciseIDs) {
         Long[] ids = GSON.fromJson(exerciseIDs, Long[].class);
         return FACADE.addExercisesToWorkout(workoutId, ids);

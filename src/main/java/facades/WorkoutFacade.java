@@ -102,8 +102,15 @@ public class WorkoutFacade {
     public WorkoutDTO createWorkout(WorkoutDTO workoutDTO) {
         EntityManager em = emf.createEntityManager();
         Workout workout = new Workout(workoutDTO.getName());
+        List<Exercise> exercises = new ArrayList<>();
         try {
             em.getTransaction().begin();
+            for (ExerciseDTO exerciseDTO : workoutDTO.getExercisesList()) {
+                Exercise exercise = em.find(Exercise.class, exerciseDTO.getId());
+                exercises.add(exercise);
+            }
+            workout.setExercisesList(exercises);
+            exercises.forEach(exercise -> exercise.getWorkoutList().add(workout));
             em.persist(workout);
             em.getTransaction().commit();
         } finally {
