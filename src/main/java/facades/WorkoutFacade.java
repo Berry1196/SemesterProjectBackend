@@ -111,26 +111,15 @@ public class WorkoutFacade {
         }
         return new WorkoutDTO(workout);
     }
-
-
-
-    public static void main(String[] args) {
-
-        emf = EMF_Creator.createEntityManagerFactory();
-        WorkoutFacade workoutFacade = getWorkoutFacade(emf);
-        ExerciseFacade exerciseFacade = ExerciseFacade.getExerciseFacade(emf);
-        UserFacade userFacade = UserFacade.getUserFacade(emf);
-        //workoutFacade.addExerciseToWorkout(1L, 1L );
-
-    }
-
+    
     public WorkoutDTO addExercisesToWorkout(Long workoutId, Long[] ids) {
         EntityManager em = emf.createEntityManager();
+        ExerciseFacade exerciseFacade = ExerciseFacade.getExerciseFacade(emf);
         Workout workout = em.find(Workout.class, workoutId);
         try {
             em.getTransaction().begin();
             for (Long id : ids) {
-                Exercise exercise = em.find(Exercise.class, id);
+                Exercise exercise = exerciseFacade.getExerciseById(id);
                 workout.getExercisesList().add(exercise);
                 exercise.getWorkoutList().add(workout);
             }
@@ -140,6 +129,18 @@ public class WorkoutFacade {
             em.close();
         }
         return new WorkoutDTO(workout);
+    }
+
+    public List<WorkoutDTO> getWorkoutsByUser(String username) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            List<Workout> workouts = em.createQuery("SELECT w FROM Workout w JOIN w.userList u WHERE u.userName = :username", Workout.class)
+                    .setParameter("username", username)
+                    .getResultList();
+            return WorkoutDTO.getDTOs(workouts);
+        } finally {
+            em.close();
+        }
     }
 }
 
