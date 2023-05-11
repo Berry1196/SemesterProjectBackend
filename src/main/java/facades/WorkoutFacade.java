@@ -162,5 +162,22 @@ public class WorkoutFacade {
         }
         return new WorkoutDTO(workout);
     }
+
+    public WorkoutDTO removeWorkoutFromUser(String username, Long id) {
+        EntityManager em = emf.createEntityManager();
+        Workout workout = em.find(Workout.class, id);
+        try {
+            em.getTransaction().begin();
+            User user = em.find(User.class, username);
+            user.getWorkoutList().remove(workout);
+            workout.getUserList().remove(user);
+            em.merge(user);
+            em.merge(workout);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new WorkoutDTO(workout);
+    }
 }
 

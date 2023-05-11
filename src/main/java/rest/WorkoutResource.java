@@ -77,6 +77,16 @@ public class WorkoutResource {
         return GSON.toJson(FACADE.getWorkoutsByUser(username));
     }
 
+    // Remove workout from user given username and workout id
+    @DELETE
+    @Produces("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/user/{username}/{id}")
+    public Response removeWorkoutFromUser(@PathParam("username") String username, @PathParam("id") Long id) {
+        WorkoutDTO workoutDTO = FACADE.removeWorkoutFromUser(username, id);
+        return Response.ok(GSON.toJson(workoutDTO)).build();
+    }
+
     @POST
     @Produces("application/json")
     @Consumes(MediaType.APPLICATION_JSON)
