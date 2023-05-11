@@ -149,5 +149,18 @@ public class WorkoutFacade {
             em.close();
         }
     }
+
+    public WorkoutDTO deleteWorkout(Long id) {
+        EntityManager em = emf.createEntityManager();
+        Workout workout = em.find(Workout.class, id);
+        try {
+            em.getTransaction().begin();
+            em.remove(workout);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new WorkoutDTO(workout);
+    }
 }
 

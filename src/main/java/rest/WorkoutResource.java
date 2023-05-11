@@ -61,6 +61,15 @@ public class WorkoutResource {
         return Response.ok(response.getBody()).build();
     }
 
+    @DELETE
+    @Produces("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
+    public Response deleteWorkout(@PathParam("id") Long id) {
+        WorkoutDTO workoutDTO = FACADE.deleteWorkout(id);
+        return Response.ok(GSON.toJson(workoutDTO)).build();
+    }
+
     @GET
     @Produces("application/json")
     @Path("/user/{username}")
@@ -73,16 +82,7 @@ public class WorkoutResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public String createWorkout(String workout) {
         WorkoutDTO workoutDTO = GSON.fromJson(workout, WorkoutDTO.class);
-        System.out.println(workoutDTO.getExercisesList().size());
+        System.out.println(workoutDTO.getExercisesList());
         return GSON.toJson(FACADE.createWorkout(workoutDTO));
-    }
-
-    @POST
-    @Produces("application/json")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/new")
-    public WorkoutDTO addExerciseToWorkout(@PathParam("workoutId") Long workoutId, String exerciseIDs) {
-        Long[] ids = GSON.fromJson(exerciseIDs, Long[].class);
-        return FACADE.addExercisesToWorkout(workoutId, ids);
     }
 }
