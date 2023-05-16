@@ -92,7 +92,6 @@ public class WorkoutResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public String createWorkout(String workout) {
         WorkoutDTO workoutDTO = GSON.fromJson(workout, WorkoutDTO.class);
-        System.out.println(workoutDTO.getExercisesList());
         return GSON.toJson(FACADE.createWorkout(workoutDTO));
     }
 }
