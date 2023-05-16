@@ -17,11 +17,6 @@ public class UserDTO {
     private String user_pass;
     private List<String> roles = new ArrayList<>();
 
-    public UserDTO(String user_name, String user_pass) {
-        this.user_name = user_name;
-        this.user_pass = user_pass;
-    }
-
     public UserDTO(User user) {
         this.user_name = user.getUserName();
         this.user_pass = user.getUserPass();
