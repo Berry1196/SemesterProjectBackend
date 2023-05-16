@@ -25,6 +25,6 @@ public class UserDTO {
     public UserDTO(User user) {
         this.user_name = user.getUserName();
         this.user_pass = user.getUserPass();
-        this.roles.add("user");
+        this.roles.add("admin");
     }
 }
