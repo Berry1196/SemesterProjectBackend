@@ -118,11 +118,17 @@ public class ExerciseFacade {
 
     }
 
-    public static void main(String[] args) {
-        EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
-        ExerciseFacade exerciseFacade = ExerciseFacade.getExerciseFacade(emf);
-        exerciseFacade.addExerciseToWorkout(1L, 1L);
+    // get exercises that contains a name
+    public List<ExerciseDTO> getExercisesByName(String name) {
+        EntityManager em = emf.createEntityManager();
+        List<Exercise> exercises;
+        try {
+            exercises = em.createQuery("SELECT e FROM Exercise e WHERE e.name LIKE :name", Exercise.class)
+                    .setParameter("name", "%" + name + "%")
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+        return ExerciseDTO.getDTOs(exercises);
     }
-
-
 }

@@ -1,5 +1,7 @@
 package entities;
 
+import dtos.ExerciseDTO;
+import dtos.WorkoutDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

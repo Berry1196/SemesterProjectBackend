@@ -43,4 +43,11 @@ public class ExerciseResource {
         ExerciseDTO exerciseDTO = FACADE.deleteExercise(id);
         return Response.ok(GSON.toJson(exerciseDTO)).build();
     }
+
+    @GET
+    @Produces("application/json")
+    @Path("/{name}")
+    public String getExercisesByName(@PathParam("name") String name) {
+        return GSON.toJson(FACADE.getExercisesByName(name));
+    }
 }

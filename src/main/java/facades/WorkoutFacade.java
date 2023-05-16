@@ -102,8 +102,15 @@ public class WorkoutFacade {
     public WorkoutDTO createWorkout(WorkoutDTO workoutDTO) {
         EntityManager em = emf.createEntityManager();
         Workout workout = new Workout(workoutDTO.getName());
+        List<Exercise> exercises = new ArrayList<>();
         try {
             em.getTransaction().begin();
+            for (ExerciseDTO exerciseDTO : workoutDTO.getExercisesList()) {
+                Exercise exercise = em.find(Exercise.class, exerciseDTO.getId());
+                exercises.add(exercise);
+            }
+            workout.setExercisesList(exercises);
+            exercises.forEach(exercise -> exercise.getWorkoutList().add(workout));
             em.persist(workout);
             em.getTransaction().commit();
         } finally {
@@ -141,6 +148,36 @@ public class WorkoutFacade {
         } finally {
             em.close();
         }
+    }
+
+    public WorkoutDTO deleteWorkout(Long id) {
+        EntityManager em = emf.createEntityManager();
+        Workout workout = em.find(Workout.class, id);
+        try {
+            em.getTransaction().begin();
+            em.remove(workout);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new WorkoutDTO(workout);
+    }
+
+    public WorkoutDTO removeWorkoutFromUser(String username, Long id) {
+        EntityManager em = emf.createEntityManager();
+        Workout workout = em.find(Workout.class, id);
+        try {
+            em.getTransaction().begin();
+            User user = em.find(User.class, username);
+            user.getWorkoutList().remove(workout);
+            workout.getUserList().remove(user);
+            em.merge(user);
+            em.merge(workout);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new WorkoutDTO(workout);
     }
 }
 

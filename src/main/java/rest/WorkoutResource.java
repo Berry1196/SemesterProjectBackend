@@ -61,6 +61,15 @@ public class WorkoutResource {
         return Response.ok(response.getBody()).build();
     }
 
+    @DELETE
+    @Produces("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
+    public Response deleteWorkout(@PathParam("id") Long id) {
+        WorkoutDTO workoutDTO = FACADE.deleteWorkout(id);
+        return Response.ok(GSON.toJson(workoutDTO)).build();
+    }
+
     @GET
     @Produces("application/json")
     @Path("/user/{username}")
@@ -68,20 +77,22 @@ public class WorkoutResource {
         return GSON.toJson(FACADE.getWorkoutsByUser(username));
     }
 
-    @POST
+    // Remove workout from user given username and workout id
+    @DELETE
     @Produces("application/json")
     @Consumes(MediaType.APPLICATION_JSON)
-    public String createWorkout(String workout) {
-        WorkoutDTO workoutDTO = GSON.fromJson(workout, WorkoutDTO.class);
-        return GSON.toJson(FACADE.createWorkout(workoutDTO));
+    @Path("/user/{username}/{id}")
+    public Response removeWorkoutFromUser(@PathParam("username") String username, @PathParam("id") Long id) {
+        WorkoutDTO workoutDTO = FACADE.removeWorkoutFromUser(username, id);
+        return Response.ok(GSON.toJson(workoutDTO)).build();
     }
 
     @POST
     @Produces("application/json")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/exercises/{workoutId}")
-    public WorkoutDTO addExerciseToWorkout(@PathParam("workoutId") Long workoutId, String exerciseIDs) {
-        Long[] ids = GSON.fromJson(exerciseIDs, Long[].class);
-        return FACADE.addExercisesToWorkout(workoutId, ids);
+    public String createWorkout(String workout) {
+        WorkoutDTO workoutDTO = GSON.fromJson(workout, WorkoutDTO.class);
+        System.out.println(workoutDTO.getExercisesList());
+        return GSON.toJson(FACADE.createWorkout(workoutDTO));
     }
 }
