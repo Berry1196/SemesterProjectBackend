@@ -86,7 +86,6 @@ public class LoginEndpoint {
         try {
             // persists the user in the database and returns the persisted user
             UserDTO returnedUserDTO = USER_FACADE.createUser(userDTO);
-
             // creates a token for the user
             String token = createToken(returnedUserDTO.getUser_name(), returnedUserDTO.getRoles());
             JsonObject responseJson = new JsonObject();
